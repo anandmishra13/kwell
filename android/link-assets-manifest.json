@@ -1,0 +1,25 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/Gotham-Bold.otf",
+      "sha1": "7eda72c017a05a7b1324b6ae3038b6c01fa0981a"
+    },
+    {
+      "path": "assets/fonts/Gotham-Book.otf",
+      "sha1": "e84b62cebdc85a2673d9c81d49507ea66890e290"
+    },
+    {
+      "path": "assets/fonts/Gotham-Light.otf",
+      "sha1": "a7f71897a0884010c691cbedca87eeaecd8b38ce"
+    },
+    {
+      "path": "assets/fonts/Gotham-Medium.otf",
+      "sha1": "e0f46faa2a008d9a5ec76db299b1e71352a8fa56"
+    },
+    {
+      "path": "assets/fonts/GothamNarrow-BoldItalic.otf",
+      "sha1": "8c52930a1e7c7386170eb463dcf8cceb1cb8ee20"
+    }
+  ]
+}
