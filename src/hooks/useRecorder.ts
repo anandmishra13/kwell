@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { api } from '../services/api';
+import { api } from '../services/apiService';
 import { logEvent } from '../services/AnalyticsService';
 
 export function useRecorder() {

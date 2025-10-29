@@ -12,7 +12,10 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import { fonts } from '../theme/fonts';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { HealthKitService } from '../services/HealthKitService';
+import HealthKitService from '../services/HealthKitService';
+import AppTrackingService from '../services/appTrackingService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 type RootStackParamList = {
   Splash: undefined;
@@ -50,73 +53,60 @@ const DEMO_SUBSCRIPTIONS: Subscription[] = [
 const SubscriptionsView: React.FC<Props> = ({ navigation }) => {
   const [selectedProduct, setSelectedProduct] = useState<Subscription>(DEMO_SUBSCRIPTIONS[0]);
   const [isfetchAmount, setIsFetchAmount] = useState<boolean>(false);
-  const [healthKitAvailable, setHealthKitAvailable] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const healthKitService = new HealthKitService();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    initializeHealthKit();
     setTimeout(() => {
+      handleRequestPermissions();
       setIsFetchAmount(true);
     }, 3000);
   }, [])
 
-  const initializeHealthKit = async () => {
-    try {
-      // Check if HealthKit is available on this device
-      // const available = await healthKitService.isAvailable();
-      // setHealthKitAvailable(available);
-      
-      // if (!available) {
-      //   console.log('HealthKit is not available on this device');
-      //   setIsLoading(false);
-      //   return;
-      // }
+  const handleComplete = async () => {
+    Alert.alert("Done");
+    await AsyncStorage.setItem('onboardingCompleted', 'true');
+  }
 
-      // Check if we've already requested permission
-      const authStatus = await healthKitService.getHealthKitAuthStatus();
+  const handleRequestPermissions = async () => {
+    setLoading(true);
+
+    try {
+      // Request App Tracking Permission first
+      const trackingStatus = await AppTrackingService.requestPermission();
+      console.log('Tracking permission status:', trackingStatus);
+
+      // Request HealthKit Permission
+      const healthKitAvailable = await HealthKitService.isAvailable();
       
-      if (!authStatus) {
-        // Show alert and request permission
-        await requestHealthKitPermission();
-      } else {
-        console.log('HealthKit already authorized');
-        setIsLoading(false);
+      if (!healthKitAvailable) {
+        setLoading(false);
+        return;
+      }
+
+      const healthKitAuth = await HealthKitService.requestAuthorization();
+      
+      if (!healthKitAuth) {
+        Alert.alert(
+          'HealthKit Access Required',
+          'To provide you with a personalized biofeedback score, we require access to your HealthKit data. This score helps you understand your overall health by using the data already on your device. Rest assured, your privacy is our top priority and the information is used only to generate your biofeedback score.',
+          [
+            {
+              text: 'Try Again',
+              onPress: handleRequestPermissions,
+            },
+            {
+              text: 'Skip',
+              style: 'cancel',
+              onPress: handleComplete,
+            },
+          ]
+        );
       }
     } catch (error) {
-      console.error('Error initializing HealthKit:', error);
-      setIsLoading(false);
-    }
-  };
-
-  const requestHealthKitPermission = async () => {
-    try {
-      setIsLoading(true);
-      
-      // Request HealthKit authorization
-      await healthKitService.requestAuthorization();
-      
-      // Log analytics event
-      // FIRAnalytics.logEvent(FIRAnalyticsEvent.openHealthKit);
-      
-      console.log('✅ HealthKit permission granted successfully');
-      setIsLoading(false);
-      
-      // Optional: Show success message
-      Alert.alert(
-        'Success',
-        'HealthKit access granted! Your biofeedback score will now be calculated.',
-        [{ text: 'OK' }]
-      );
-    } catch (error) {
-      console.error('Error requesting HealthKit permission:', error);
-      setIsLoading(false);
-      
-      Alert.alert(
-        'Permission Denied',
-        'HealthKit access was not granted. You can enable it later in Settings.',
-        [{ text: 'OK' }]
-      );
+      console.error('Error requesting permissions:', error);
+      Alert.alert('Error', 'Failed to request permissions. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -129,17 +119,6 @@ const SubscriptionsView: React.FC<Props> = ({ navigation }) => {
   const handleRestorePurchases = () => {
     navigation.replace('MainTabs');
   };
-
-  if (isLoading) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#6B46C1" />
-          <Text style={styles.loadingText}>Setting up HealthKit...</Text>
-        </View>
-      </SafeAreaView>
-    );
-  }
 
   return (
     <SafeAreaView style={styles.container}>

@@ -13,8 +13,8 @@
 		5071FE60B3BE41BFA6F7AE82 /* Gotham-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 902E1772D14842BC8A2DC2F0 /* Gotham-Medium.otf */; };
 		63997E98C4FA4581A7B55100 /* Gotham-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = D197933C2CAC45408A5DC51A /* Gotham-Bold.otf */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
+		78724116F77ECE8F67DEDE9D /* Pods_kwell.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD4E30E287A9C961C186B32E /* Pods_kwell.framework */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		9748983365EC6B051517BD6A /* Pods_kwell.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDFA794BAA6460708F9107B2 /* Pods_kwell.framework */; };
 		A4FB3F998D276E2047AD2D96 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
 		FEA7A8FEC5E942F9A024CBA2 /* Gotham-Book.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8327AAE4070F45F8AE360BE2 /* Gotham-Book.otf */; };
 /* End PBXBuildFile section */
@@ -24,18 +24,18 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = kwell/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = kwell/Info.plist; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = kwell/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		6474081BE43820371FF5D238 /* Pods-kwell.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-kwell.debug.xcconfig"; path = "Target Support Files/Pods-kwell/Pods-kwell.debug.xcconfig"; sourceTree = "<group>"; };
+		3F3D972AF68C8862D056D2E2 /* Pods-kwell.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-kwell.debug.xcconfig"; path = "Target Support Files/Pods-kwell/Pods-kwell.debug.xcconfig"; sourceTree = "<group>"; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = kwell/AppDelegate.swift; sourceTree = "<group>"; };
+		780507FCBE75C35B2026EA4C /* Pods-kwell.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-kwell.release.xcconfig"; path = "Target Support Files/Pods-kwell/Pods-kwell.release.xcconfig"; sourceTree = "<group>"; };
 		7BB5BBD0E0644AFBB4042F1F /* Gotham-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Gotham-Light.otf"; path = "../assets/fonts/Gotham-Light.otf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = kwell/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8327AAE4070F45F8AE360BE2 /* Gotham-Book.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Gotham-Book.otf"; path = "../assets/fonts/Gotham-Book.otf"; sourceTree = "<group>"; };
 		902E1772D14842BC8A2DC2F0 /* Gotham-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Gotham-Medium.otf"; path = "../assets/fonts/Gotham-Medium.otf"; sourceTree = "<group>"; };
 		A68673256B4249829438BE57 /* GothamNarrow-BoldItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamNarrow-BoldItalic.otf"; path = "../assets/fonts/GothamNarrow-BoldItalic.otf"; sourceTree = "<group>"; };
 		B81AB5F52EAE700100998795 /* kwell.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = kwell.entitlements; path = kwell/kwell.entitlements; sourceTree = "<group>"; };
-		BA230866D80DFA8DC94D4E01 /* Pods-kwell.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-kwell.release.xcconfig"; path = "Target Support Files/Pods-kwell/Pods-kwell.release.xcconfig"; sourceTree = "<group>"; };
-		BDFA794BAA6460708F9107B2 /* Pods_kwell.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_kwell.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D197933C2CAC45408A5DC51A /* Gotham-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Gotham-Bold.otf"; path = "../assets/fonts/Gotham-Bold.otf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		FD4E30E287A9C961C186B32E /* Pods_kwell.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_kwell.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,7 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9748983365EC6B051517BD6A /* Pods_kwell.framework in Frameworks */,
+				78724116F77ECE8F67DEDE9D /* Pods_kwell.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -67,7 +67,7 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				BDFA794BAA6460708F9107B2 /* Pods_kwell.framework */,
+				FD4E30E287A9C961C186B32E /* Pods_kwell.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -117,8 +117,8 @@
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				6474081BE43820371FF5D238 /* Pods-kwell.debug.xcconfig */,
-				BA230866D80DFA8DC94D4E01 /* Pods-kwell.release.xcconfig */,
+				3F3D972AF68C8862D056D2E2 /* Pods-kwell.debug.xcconfig */,
+				780507FCBE75C35B2026EA4C /* Pods-kwell.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -130,14 +130,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "kwell" */;
 			buildPhases = (
-				8338569B5291ED4B87E20D2D /* [CP] Check Pods Manifest.lock */,
+				7A94B2353012E29316D997A7 /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				AA0A1FA830DB2B906A53A68B /* [CP] Embed Pods Frameworks */,
-				37EB258314D089A821105F53 /* [CP] Copy Pods Resources */,
-				C88628FEBD12908389EDF05D /* [CP-User] [RNFB] Core Configuration */,
+				1675A97E4266F31FC513C685 /* [CP] Embed Pods Frameworks */,
+				7820EE0BB85DA366FAD53007 /* [CP] Copy Pods Resources */,
+				A0FD51AB0B5C775E002E9862 /* [CP-User] [RNFB] Core Configuration */,
 			);
 			buildRules = (
 			);
@@ -214,7 +214,24 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"$REACT_NATIVE_PATH/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"$REACT_NATIVE_PATH/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
 		};
-		37EB258314D089A821105F53 /* [CP] Copy Pods Resources */ = {
+		1675A97E4266F31FC513C685 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-kwell/Pods-kwell-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-kwell/Pods-kwell-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-kwell/Pods-kwell-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7820EE0BB85DA366FAD53007 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -231,7 +248,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-kwell/Pods-kwell-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		8338569B5291ED4B87E20D2D /* [CP] Check Pods Manifest.lock */ = {
+		7A94B2353012E29316D997A7 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -253,24 +270,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		AA0A1FA830DB2B906A53A68B /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-kwell/Pods-kwell-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-kwell/Pods-kwell-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-kwell/Pods-kwell-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		C88628FEBD12908389EDF05D /* [CP-User] [RNFB] Core Configuration */ = {
+		A0FD51AB0B5C775E002E9862 /* [CP-User] [RNFB] Core Configuration */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -299,7 +299,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6474081BE43820371FF5D238 /* Pods-kwell.debug.xcconfig */;
+			baseConfigurationReference = 3F3D972AF68C8862D056D2E2 /* Pods-kwell.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -329,7 +329,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BA230866D80DFA8DC94D4E01 /* Pods-kwell.release.xcconfig */;
+			baseConfigurationReference = 780507FCBE75C35B2026EA4C /* Pods-kwell.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

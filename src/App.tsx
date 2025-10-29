@@ -5,7 +5,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 // import RNBootSplash from "react-native-bootsplash";
 import BootSplash from 'react-native-bootsplash';
 import SplashScreen from './screens/SplashScreen';
-
+import { NativeModules, Platform } from 'react-native';
+import AppleHealthKit from 'react-native-health';
 
 
 export default function App() {
@@ -14,6 +15,14 @@ export default function App() {
   useEffect(() => {
     // Hide native splash when JS is ready
     BootSplash.hide({ fade: true });
+  //   if (Platform.OS === 'ios') {
+  //   console.log('=== DEBUG ===');
+  //   console.log('AppleHealthKit import:', AppleHealthKit);
+  //   console.log('AppleHealthKit.initHealthKit:', AppleHealthKit?.initHealthKit);
+  //   console.log('Available methods:', Object.keys(AppleHealthKit || {}));
+  //   console.log('NativeModules.RNAppleHealthKit:', NativeModules.RNAppleHealthKit);
+  //   console.log('=== END DEBUG ===');
+  // }
   }, []);
 
   if (showJSSplash) {

@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
+// import { iOSUIKit } from 'react-native-typography';
+
 
 interface HeaderViewProps {
   title: string;
@@ -38,8 +40,8 @@ const HeaderView: React.FC<HeaderViewProps> = ({
         </View>
       </View>
       
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.subtitle}>{subtitle}</Text>
+      <Text style={[styles.title]}>{title}</Text>
+      <Text style={[styles.subtitle]}>{subtitle}</Text>
     </View>
   );
 };
@@ -52,7 +54,7 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     width: '100%',
-    marginBottom: 32,
+    marginBottom: 10,
     flexDirection: 'row', 
     justifyContent: 'space-between', 
     alignItems: 'center',
@@ -65,7 +67,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', 
     justifyContent: 'flex-end', 
     alignItems: 'center',
-    gap: 10,
+    gap: 5,
     // position: 'absolute',
     // top: 0,
     right: 0,
@@ -81,17 +83,19 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 10,
     fontWeight: '600',
+    fontFamily: 'gothamMedium'
   },
   title: {
     color: 'white',
-    fontSize: 32,
-    fontWeight: 'bold',
+    fontFamily: 'Gotham-Bold',
     marginBottom: 4,
+    fontSize: 30
   },
   subtitle: {
     color: 'white',
-    fontSize: 16,
+    fontFamily: 'Gotham-Light',
     opacity: 0.8,
+    fontSize: 20
   },
 });
 

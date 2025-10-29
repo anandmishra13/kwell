@@ -20,6 +20,8 @@ import {
 import { Recorder } from '@react-native-community/audio-toolkit';
 import DeviceInfo from 'react-native-device-info';
 import Svg, { Circle } from 'react-native-svg';
+import HealthKitService from '../services/HealthKitService';
+import { Fonts } from '../theme/fonts';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const RECORDING_DURATION = 5;
@@ -46,6 +48,8 @@ const HomeScreen = () => {
     ios: PERMISSIONS.IOS.MICROPHONE,
     android: PERMISSIONS.ANDROID.RECORD_AUDIO,
   });
+
+
 
   useEffect(() => {
     checkPermission();
@@ -134,6 +138,7 @@ const HomeScreen = () => {
         sampleRate: 44100,
         quality: 'high',
         format: 'mp4',
+        encoder: 'mp4'
       });
 
       recorderRef.current.prepare((err: any) => {
@@ -250,102 +255,114 @@ const HomeScreen = () => {
   };
 
   const uploadAndDetect = async (filePath: string) => {
-    try {
-      if (!filePath) {
-        throw new Error('No audio file found');
-      }
-
-      setIsLoading(true);
-
-      // Get device ID
-      const deviceId = await DeviceInfo.getUniqueId();
-
-      // Use FormData
-      const formData = new FormData();
-      formData.append('file', {
-        uri: filePath,
-        type: 'audio/x-m4a',
-        name: 'recording.m4a',
-      } as any);
-      formData.append('device_id', deviceId);
-
-      console.log('📤 Uploading audio...');
-      console.log('File path:', filePath);
-      console.log('Device ID:', deviceId);
-      console.log('API URL:', `${BASE_URL}upload-to-spaces/`);
-
-      const uploadRes = await fetch(`${BASE_URL}upload-to-spaces/`, {
-        method: 'POST',
-        headers: {
-          'accept': 'application/json',
-        },
-        body: formData,
-      });
-
-      console.log('Upload response status:', uploadRes.status);
-      const responseText = await uploadRes.text();
-      console.log('Upload response body:', responseText);
-
-      if (!uploadRes.ok) {
-        throw new Error(`Upload failed: ${uploadRes.status} - ${responseText}`);
-      }
-
-      let uploadData;
-      try {
-        uploadData = JSON.parse(responseText);
-      } catch (e) {
-        throw new Error(`Failed to parse upload response: ${responseText}`);
-      }
-
-      console.log('Upload data:', uploadData);
-
-      // API returns "ID" (uppercase) not "id" (lowercase)
-      const uploadId = uploadData?.ID || uploadData?.id;
-      
-      if (!uploadId) {
-        throw new Error(`Upload failed - no ID returned. Response: ${JSON.stringify(uploadData)}`);
-      }
-
-      console.log('✅ Upload successful, ID:', uploadId);
-
-      // Call detect API
-      console.log('📊 Calling detect API...');
-      const detectRes = await fetch(`${BASE_URL}detect/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'accept': 'application/json',
-        },
-        body: JSON.stringify({ id: uploadId }),
-      });
-
-      console.log('Detect response status:', detectRes.status);
-      const detectText = await detectRes.text();
-      console.log('Detect response body:', detectText);
-
-      if (!detectRes.ok) {
-        throw new Error(`Detection failed: ${detectRes.status} - ${detectText}`);
-      }
-
-      let detectData;
-      try {
-        detectData = JSON.parse(detectText);
-      } catch (e) {
-        throw new Error(`Failed to parse detect response: ${detectText}`);
-      }
-
-      console.log('✅ Detection successful:', detectData);
-
-      setDetectedResult(detectData);
-      setState('completed');
-    } catch (error) {
-      console.error('Detection error:', error);
-      Alert.alert('Error', `Failed to analyze your voice: ${error.message}`);
-      reset();
-    } finally {
-      setIsLoading(false);
+  try {
+    if (!filePath) {
+      throw new Error('No audio file found');
     }
-  };
+
+    setIsLoading(true);
+
+    // Get device ID
+    const deviceId = await DeviceInfo.getUniqueId();
+
+    // Use FormData
+    const formData = new FormData();
+    formData.append('file', {
+      uri: filePath,
+      type: 'audio/x-m4a',
+      name: 'recording.m4a',
+    } as any);
+    formData.append('device_id', deviceId);
+
+    console.log('📤 Uploading audio...');
+    const uploadRes = await fetch(`${BASE_URL}upload-to-spaces/`, {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+      },
+      body: formData,
+    });
+
+    const responseText = await uploadRes.text();
+    console.log('Upload response body:', responseText);
+
+    if (!uploadRes.ok) {
+      throw new Error(`Upload failed: ${uploadRes.status} - ${responseText}`);
+    }
+
+    let uploadData;
+    try {
+      uploadData = JSON.parse(responseText);
+    } catch (error) {
+      throw new Error(`Failed to parse upload response: ${responseText} log error ${error}`);
+    }
+
+    const uploadId = uploadData?.ID || uploadData?.id;
+    
+    if (!uploadId) {
+      throw new Error(`Upload failed - no ID returned`);
+    }
+
+    console.log('✅ Upload successful, ID:', uploadId);
+
+    // Call detect API
+    console.log('📊 Calling detect API...');
+    const detectRes = await fetch(`${BASE_URL}detect/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'accept': 'application/json',
+      },
+      body: JSON.stringify({ id: uploadId }),
+    });
+
+    const detectText = await detectRes.text();
+    console.log('Detect response body:', detectText);
+
+    if (!detectRes.ok) {
+      throw new Error(`Detection failed: ${detectRes.status} - ${detectText}`);
+    }
+
+    let detectData;
+    try {
+      detectData = JSON.parse(detectText);
+    } catch (e) {
+      throw new Error(`Failed to parse detect response: ${detectText} ${e}`);
+    }
+
+    console.log('✅ Detection successful:', detectData);
+
+    // ⭐ NEW: Save mindful session to HealthKit (matching Swift logic)
+    if (detectData?.result) {
+      const emotionPoints = detectData.result.max_emotion_points || 0;
+      const duration = Math.abs(emotionPoints * 600 + 5); // Same formula as Swift
+      
+      console.log(`💚 Saving mindful session: ${duration} seconds (emotion points: ${emotionPoints})`);
+      
+      try {
+        await HealthKitService.addMindfulSession(duration);
+        console.log('✅ Mindful session saved to HealthKit');
+      } catch (error) {
+        console.error('⚠️ Failed to save mindful session:', error);
+        // Don't fail the whole flow if HealthKit save fails
+      }
+    }
+
+    setDetectedResult(detectData);
+    setState('completed');
+
+    // ⭐ NEW: Trigger profile refresh (optional but recommended)
+    // This notifies the ProfileScreen to reload
+    // You can use React Navigation params or EventEmitter
+    
+  } catch (error) {
+    console.error('Detection error:', error);
+    Alert.alert('Error', `Failed to analyze your voice: ${error.message}`);
+    reset();
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const reset = () => {
     setState('idle');
@@ -357,8 +374,8 @@ const HomeScreen = () => {
 
   const getButtonTitle = () => {
     if (state === 'recording') return 'Stop Recording';
-    if (state === 'processing') return 'Processing...';
-    if (state === 'completed') return 'Record Again';
+    if (state === 'processing') return 'Record again';
+    if (state === 'completed') return 'Record again';
     return 'Start Recording';
   };
 
@@ -384,7 +401,7 @@ const HomeScreen = () => {
             cy={radius}
             r={radius - 10}
             stroke="rgba(255, 255, 255, 0.25)"
-            strokeWidth="10"
+            strokeWidth="6"
             fill="none"
           />
           <Circle
@@ -392,7 +409,7 @@ const HomeScreen = () => {
             cy={radius}
             r={radius - 10}
             stroke="white"
-            strokeWidth="10"
+            strokeWidth="6"
             fill="none"
             strokeDasharray={circumference}
             strokeDashoffset={dashOffset}
@@ -401,7 +418,7 @@ const HomeScreen = () => {
             origin={`${radius}, ${radius}`}
           />
         </Svg>
-        <Text style={styles.timerText}>0{Math.ceil(timeRemaining)}</Text>
+        <Text style={[styles.timerText, Fonts.GothamBold]}>0{Math.ceil(timeRemaining)}</Text>
       </View>
     );
   };
@@ -414,23 +431,31 @@ const HomeScreen = () => {
           style={styles.logo}
           resizeMode="contain"
         />
-        <TouchableOpacity onPress={() => Alert.alert('Info', 'We record your voice securely.')}>
+        <TouchableOpacity 
+        onPress={() => Alert.alert(
+          'Disclaimer', 
+          "The information provided by the Kwell app is for informational purposes only. It is not a substitute for professional medical advice, diagnosis or treatment. You should always seek advice from a doctor or other qualified healthcare provider regarding any health concerns or before making any decisions about your health based on information you've read or heard, as the information provided is not a substitute for professional medical advice.",
+          [{text: "I Understand"}]
+          )}>
           <Text style={styles.infoIcon}>ⓘ</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>Check your emotion.</Text>
-        <Text style={styles.subtitle}>Record your voice to detect your mood</Text>
+        <Text style={[styles.title, Fonts.GothamBold]}>Check your emotion.</Text>
+        <Text style={[styles.subtitle, Fonts.GothamLight]}>Record your voice to detect your mood</Text>
       </View>
 
       <View style={styles.centerContent}>
         {state === 'processing' || isLoading ? (
-          <ActivityIndicator color="#fff" size={30} />
+          <View>
+            <ActivityIndicator color="#fff" size="large" />
+            <Text style={styles.loadingText}>Processing...</Text>
+          </View>
         ) : state === 'completed' ? (
           <>
-            <Text style={styles.resultLabel}>Detected Emotion:</Text>
-            <Text style={styles.resultEmotion}>
+            <Text style={[styles.resultLabel, Fonts.GothamLight]}>Detected Emotion:</Text>
+            <Text style={[styles.resultEmotion]}>
               {detectedResult?.result?.max_emotion || 'Unknown'}
             </Text>
           </>
@@ -441,11 +466,11 @@ const HomeScreen = () => {
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-          style={[styles.primaryButton, isLoading && styles.buttonDisabled]}
+          style={[styles.primaryButton, isLoading && styles.buttonDisabled, getButtonTitle() === "Record again" && styles.outlineButton]}
           onPress={handlePress}
           disabled={isLoading || state === 'processing'}
         >
-          <Text style={styles.primaryButtonText}>{getButtonTitle()}</Text>
+          <Text style={[styles.primaryButtonText, Fonts.GothamMedium, getButtonTitle() === "Record again" && styles.outlineButtonText]}>{getButtonTitle()}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -490,11 +515,16 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     letterSpacing: -0.8,
   },
+  loadingText: {
+    marginTop: 5,
+    color: '#ffffff',
+    fontSize: 16,
+    opacity: 0.8
+  },
   subtitle: { 
-    fontSize: 22, 
+    fontSize: 20, 
     color: 'rgba(255,255,255,0.9)',
-    fontWeight: '400',
-    letterSpacing: 0.1,
+    // letterSpacing: 0.1,
   },
   centerContent: { 
     flex: 1, 
@@ -510,7 +540,7 @@ const styles = StyleSheet.create({
     letterSpacing: -3,
     top: '50%',
     left: '50%',
-    transform: [{ translateX: -120 }, { translateY: -30 }],
+    transform: [{ translateX: -125 }, { translateY: -30 }],
   },
   resultLabel: { 
     fontSize: 20, 
@@ -545,6 +575,25 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 16,
     elevation: 8,
+  },
+  outlineButton: {
+    backgroundColor: '#6B00F5',
+    paddingVertical: 22,
+    borderRadius: 50,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 16,
+    elevation: 8,
+    borderColor: '#ffffff',
+    borderStyle: 'solid',
+    borderWidth: 2
+  },
+  outlineButtonText: {
+    color: '#ffffff', 
+    fontSize: 19, 
+    letterSpacing: 0.5,
   },
   primaryButtonText: { 
     color: '#6B00F5', 

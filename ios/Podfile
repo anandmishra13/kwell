@@ -26,28 +26,8 @@ use_frameworks! :linkage => :static
 
 prepare_react_native_project!
 
-# ⬇️ Setup permissions - Microphone enabled
 setup_permissions([
-  # 'AppTrackingTransparency',
-  # 'Bluetooth',
-  # 'Calendars',
-  # 'CalendarsWriteOnly',
-  # 'Camera',
-  # 'Contacts',
-  # 'FaceID',
-  # 'LocationAccuracy',
-  # 'LocationAlways',
-  # 'LocationWhenInUse',
-  # 'MediaLibrary',
   'Microphone',
-  # 'Motion',
-  # 'Notifications',
-  # 'PhotoLibrary',
-  # 'PhotoLibraryAddOnly',
-  # 'Reminders',
-  # 'Siri',
-  # 'SpeechRecognition',
-  # 'StoreKit',
 ])
 
 target 'kwell' do
@@ -56,7 +36,7 @@ target 'kwell' do
   use_react_native!(
     :path => config[:reactNativePath],
     :hermes_enabled => true,
-    :fabric_enabled => true,
+    :fabric_enabled => false,
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 

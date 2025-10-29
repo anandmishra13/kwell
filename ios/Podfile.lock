@@ -2004,6 +2004,8 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
+  - react-native-tracking-transparency (0.1.2):
+    - React
   - React-NativeModulesApple (0.82.0):
     - boost
     - DoubleConversion
@@ -2633,7 +2635,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - RNAudioRecorderPlayer (3.6.1):
+  - RNAudioRecorderPlayer (3.6.14):
     - React-Core
   - RNBootSplash (6.3.11):
     - boost
@@ -2924,6 +2926,7 @@ DEPENDENCIES:
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - react-native-tracking-transparency (from `../node_modules/react-native-tracking-transparency`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
   - React-oscompat (from `../node_modules/react-native/ReactCommon/oscompat`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -3075,6 +3078,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/blur"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-tracking-transparency:
+    :path: "../node_modules/react-native-tracking-transparency"
   React-NativeModulesApple:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios"
   React-oscompat:
@@ -3224,6 +3229,7 @@ SPEC CHECKSUMS:
   React-microtasksnativemodule: 6d775fdf71445f58dbedbd66ed9cb08b48ae2797
   react-native-blur: b83ffbc5380d8bd2f06804b4b0e848be3507e65c
   react-native-safe-area-context: ee1e8e2a7abf737a8d4d9d1a5686a7f2e7466236
+  react-native-tracking-transparency: 15eb319f2b982070eb9831582af27d87badfa624
   React-NativeModulesApple: b2ee5b48020439fd81d1fd9cba40ebf0c3af5636
   React-oscompat: 80ca388c4831481cd03a6b45ecfc82739ca9a95e
   React-perflogger: 9725c8b401ca406f52e4bb59bf0b22ef9354f96a
@@ -3259,7 +3265,7 @@ SPEC CHECKSUMS:
   ReactNativeAudioToolkit: 1b4cddfc1cc4624c3db0a936d700fef298458f19
   RNAppleHealthKit: 86ef7ab70f762b802f5c5289372de360cca701f9
   RNAudioAPI: f2d35c692ad2360932760a6a40fe1447b1ad43a6
-  RNAudioRecorderPlayer: b1dda207b34c980799f9d70e742ce7bf3cae50ed
+  RNAudioRecorderPlayer: b5ed41ccfe72a211a870bfe09ab36c046eb27d2a
   RNBootSplash: 7fcc9a58ae343aeb1a1dd49f9030832fe432c544
   RNCAsyncStorage: 87d51a3aa982dd38d07ecb588aa67821a4a14eee
   RNDeviceInfo: bcce8752b5043a623fe3c26789679b473f705d3c
@@ -3273,6 +3279,6 @@ SPEC CHECKSUMS:
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: ce55ebb197c21e22b6700cd36e3f36b7ec26e6f8
 
-PODFILE CHECKSUM: 853e7e0fcf662ec60ab269513cdbd60d6507831e
+PODFILE CHECKSUM: 33f0e3ecea071a4086c94ea2fbefa9ecb1621d76
 
 COCOAPODS: 1.16.2

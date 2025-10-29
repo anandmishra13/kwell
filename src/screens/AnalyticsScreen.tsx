@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -6,10 +6,13 @@ import {
   ActivityIndicator,
   Dimensions,
   ScrollView,
+  PanResponder,
   TouchableOpacity,
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
+import { Fonts } from '../theme/fonts';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const BASE_URL = __DEV__
@@ -22,20 +25,33 @@ interface AnalyticsData {
   'Emotion'?: string;
 }
 
-// Emotion heights (matching Swift code)
+// Emotion heights (matching Swift code exactly)
 const EMOTION_HEIGHTS: { [key: string]: number } = {
-  sadness: 3,
-  anger: 8,
-  approval: 16,
-  neutral: 23,
-  optimism: 31,
   joy: 34,
+  optimism: 31,
+  neutral: 23,
+  approval: 16,
+  anger: 8,
+  sadness: 3,
 };
+
+// Y-axis section heights (matching Swift proportions exactly)
+const Y_AXIS_SECTIONS = [
+  { title: 'JOY', heightRatio: 3 / 34 },
+  { title: 'OPTIMISM', heightRatio: 8 / 34 },
+  { title: 'NEUTRAL', heightRatio: 7 / 34 },
+  { title: 'APPROVAL', heightRatio: 8 / 34 },
+  { title: 'ANGER', heightRatio: 5 / 34 },
+  { title: 'SAD', heightRatio: 3 / 34, hideRule: true },
+];
 
 const AnalyzeScreen = () => {
   const [analytics, setAnalytics] = useState<AnalyticsData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedBar, setSelectedBar] = useState<number | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  
+  const chartRef = useRef<View>(null);
+  const [chartLayout, setChartLayout] = useState({ x: 0, y: 0, width: 0, height: 0 });
 
   useEffect(() => {
     fetchAnalytics();
@@ -63,7 +79,7 @@ const AnalyzeScreen = () => {
       }
 
       const data = await response.json();
-      console.log('Analytics data:', data);
+      console.log('Analytics ', data);
 
       const analyticsArray = data.Analytics || [];
       setAnalytics(analyticsArray.reverse());
@@ -84,31 +100,49 @@ const AnalyzeScreen = () => {
     return date.toLocaleString('en-US', { month: 'short' }).toUpperCase();
   };
 
+  // Pan responder for touch interaction
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderGrant: (evt) => {
+        handleTouch(evt.nativeEvent.locationX);  // Touch starts
+      },
+      onPanResponderMove: (evt) => {
+        handleTouch(evt.nativeEvent.locationX);  // Dragging
+      },
+      onPanResponderRelease: () => {
+        // Tooltip stays visible (matching Swift behavior)
+      },
+    })
+  ).current;
+
+  const handleTouch = (touchX: number) => {
+      const barWidth = chartLayout.width / analytics.length;
+      const index = Math.floor(touchX / barWidth);  // Get bar index
+      
+      if (index >= 0 && index < analytics.length) {
+        setSelectedIndex(index);  // Show tooltip for this bar
+      }
+  };
+
   const renderYAxisLabels = () => {
     const chartHeight = SCREEN_HEIGHT * 0.5;
-    const labels = [
-      { title: 'JOY', heightRatio: 3 / 34 },
-      { title: 'OPTIMISM', heightRatio: 8 / 34 },
-      { title: 'NEUTRAL', heightRatio: 7 / 34 },
-      { title: 'APPROVAL', heightRatio: 8 / 34 },
-      { title: 'ANGER', heightRatio: 5 / 34 },
-      { title: 'SAD', heightRatio: 3 / 34, hideRule: true },
-    ];
 
     return (
       <View style={[styles.yAxisContainer, { height: chartHeight }]}>
-        {labels.map((label, index) => {
-          const sectionHeight = chartHeight * label.heightRatio;
-          
+        {Y_AXIS_SECTIONS.map((section, index) => {
+          const sectionHeight = chartHeight * section.heightRatio;
+
           return (
             <View
               key={index}
               style={[styles.yAxisSection, { height: sectionHeight }]}
             >
               <View style={styles.yAxisLabelWrapper}>
-                <Text style={styles.yAxisText}>{label.title}</Text>
+                <Text style={[styles.yAxisText, Fonts.GothamMedium]}>{section.title}</Text>
               </View>
-              {!label.hideRule && (
+              {!section.hideRule && (
                 <View style={styles.yAxisLineContainer}>
                   <View style={styles.yAxisLineDash} />
                   <View style={styles.yAxisLineFull} />
@@ -135,39 +169,55 @@ const AnalyzeScreen = () => {
           const emotion = data.Emotion?.toLowerCase() || 'neutral';
           const emotionHeight = EMOTION_HEIGHTS[emotion] || 0;
           const barHeightPercent = (emotionHeight / maxHeight) * 100;
+          const isSelected = selectedIndex === index;
 
           return (
-            <View
+            <TouchableOpacity
               key={index}
-              style={[styles.barWrapper, { width: barWidth, marginRight: barSpacing }]}
+              activeOpacity={1}
+              onPress={() => {
+                setSelectedIndex(isSelected ? null : index);
+              }}
+              style={[
+                styles.barWrapper,
+                { width: barWidth, marginRight: barSpacing },
+              ]}
             >
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={() => setSelectedBar(selectedBar === index ? null : index)}
-                style={styles.barTouchable}
-              >
-                <View style={styles.barContainer}>
-                  <View
-                    style={[
-                      styles.bar,
-                      {
-                        height: `${barHeightPercent}%`,
-                      },
-                    ]}
-                  />
-                </View>
-                <Text style={styles.dateLabel}>
-                  {getDay(data['Date with Timestamp'])}
-                </Text>
-              </TouchableOpacity>
-              {selectedBar === index && (
-                <View style={[styles.tooltip, { bottom: `${barHeightPercent}%` }]}>
+              {/* Tooltip - positioned absolutely above bar */}
+              {isSelected && (
+                <View
+                  style={[
+                    styles.tooltip,
+                    {
+                      bottom: barHeightPercent + '%',
+                      marginBottom: 10,
+                    },
+                  ]}
+                >
+                  <View style={styles.tooltipArrow} />
                   <Text style={styles.tooltipText}>
                     {data.Emotion?.toUpperCase() || 'NEUTRAL'}
                   </Text>
                 </View>
               )}
-            </View>
+
+              {/* Bar */}
+              <View style={styles.barContainer}>
+                <View
+                  style={[
+                    styles.bar,
+                    {
+                      height: `${barHeightPercent}%`,
+                    },
+                  ]}
+                />
+              </View>
+
+              {/* Date label */}
+              <Text style={styles.dateLabel}>
+                {getDay(data['Date with Timestamp'])}
+              </Text>
+            </TouchableOpacity>
           );
         })}
       </View>
@@ -178,8 +228,8 @@ const AnalyzeScreen = () => {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>Analyze emotion</Text>
-          <Text style={styles.subtitle}>in your voice</Text>
+          <Text style={[styles.title, Fonts.GothamBold]}>Analyze emotion</Text>
+          <Text style={[styles.subtitle, Fonts.GothamMedium]}>in your voice</Text>
         </View>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#fff" />
@@ -192,12 +242,12 @@ const AnalyzeScreen = () => {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>Analyze emotion</Text>
-          <Text style={styles.subtitle}>in your voice</Text>
+          <Text style={[styles.title, Fonts.GothamBold]}>Analyze emotion</Text>
+          <Text style={[styles.subtitle, Fonts.GothamMedium]}>in your voice</Text>
         </View>
         <View style={styles.placeholderContainer}>
           <Text style={styles.placeholderIcon}>⚠️</Text>
-          <Text style={styles.placeholderTitle}>Oops! No data available!</Text>
+          <Text style={[styles.placeholderTitle, Fonts.GothamLight]}>Oops! No data available!</Text>
           <Text style={styles.placeholderSubtitle}>
             Start recording to see analytics...
           </Text>
@@ -215,12 +265,17 @@ const AnalyzeScreen = () => {
 
       <View style={styles.mainContent}>
         <View style={styles.chartArea}>
-          <Text style={styles.monthLabel}>
-            {analytics[0] ? getMonth(analytics[0]['Date with Timestamp']) : ''}
-          </Text>
+          {/* Month label - positioned at bottom of Y-axis */}
+          <View style={styles.monthLabelContainer}>
+            <Text style={styles.monthLabel}>
+              {analytics[0] ? getMonth(analytics[0]['Date with Timestamp']) : ''}
+            </Text>
+          </View>
 
+          {/* Chart area with Y-axis and bars */}
           <View style={styles.chartRow}>
             {renderYAxisLabels()}
+            
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -232,10 +287,11 @@ const AnalyzeScreen = () => {
           </View>
         </View>
 
+        {/* Footer with legend */}
         <View style={styles.footer}>
           <View style={styles.legend}>
             <View style={styles.legendDot} />
-            <Text style={styles.legendText}>EMOTIONAL AFFECT</Text>
+            <Text style={[styles.legendText, Fonts.GothamMedium]}>EMOTIONAL AFFECT</Text>
           </View>
         </View>
       </View>
@@ -247,15 +303,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#6B00F5',
+    paddingVertical: 16,
   },
   header: {
     alignItems: 'center',
     paddingTop: 60,
     paddingBottom: 30,
+    height: SCREEN_HEIGHT * 0.2,
   },
   title: {
     fontSize: 30,
-    fontWeight: '800',
+    fontWeight: '700',
     color: 'white',
     letterSpacing: -0.5,
   },
@@ -272,17 +330,22 @@ const styles = StyleSheet.create({
   },
   chartArea: {
     flex: 1,
+    // paddingHorizontal: 20,
+  },
+  monthLabelContainer: {
+    alignItems: 'flex-start',
+    marginBottom: 10,
+    paddingLeft: 70,
   },
   monthLabel: {
     color: 'white',
     fontSize: 11.5,
     fontWeight: '400',
-    textAlign: 'center',
-    marginBottom: 10,
+    letterSpacing: 0.3,
   },
   chartRow: {
     flexDirection: 'row',
-    flex: 1,
+    height: SCREEN_HEIGHT * 0.5,
   },
   yAxisContainer: {
     width: 70,
@@ -300,7 +363,7 @@ const styles = StyleSheet.create({
   },
   yAxisText: {
     color: 'white',
-    fontSize: 8.5,
+    fontSize: 8.75,
     fontWeight: '500',
     letterSpacing: 0.5,
     transform: [{ rotate: '-90deg' }],
@@ -308,8 +371,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   yAxisLineContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    width: Dimensions.get('window').width - 40,
     flexDirection: 'row',
-    width: '100%',
   },
   yAxisLineDash: {
     height: 1,
@@ -328,22 +394,35 @@ const styles = StyleSheet.create({
     paddingBottom: 35,
     paddingRight: 20,
   },
+  tooltipArrow: {
+    position: 'absolute',
+    bottom: -5,
+    left: '50%',
+    marginLeft: -5,
+    width: 0,
+    height: 0,
+    borderLeftWidth: 5,
+    borderRightWidth: 5,
+    borderTopWidth: 5,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderTopColor: 'rgba(0, 0, 0, 0.85)',
+  },
   barsContainer: {
     flexDirection: 'row',
     alignItems: 'flex-end',
+    paddingHorizontal: 5,
+    position: 'absolute'
   },
   barWrapper: {
     alignItems: 'center',
-    position: 'relative',
-  },
-  barTouchable: {
-    width: '100%',
-    flex: 1,
+    justifyContent: 'flex-end',
   },
   barContainer: {
     flex: 1,
     width: '100%',
     justifyContent: 'flex-end',
+    marginBottom: 8,
   },
   bar: {
     width: '100%',
@@ -352,37 +431,30 @@ const styles = StyleSheet.create({
   },
   tooltip: {
     position: 'absolute',
-    left: '50%',
-    transform: [{ translateX: -40 }],
     backgroundColor: 'rgba(0, 0, 0, 0.85)',
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 8,
-    marginBottom: 10,
-    zIndex: 1000,
-    elevation: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    
+    zIndex: 10000,
+    minWidth: 60,
+    alignSelf: 'center',
   },
   tooltipText: {
     color: 'white',
     fontSize: 11,
     fontWeight: '700',
     textAlign: 'center',
+    letterSpacing: 0.3,
   },
   dateLabel: {
     color: 'white',
     fontSize: 11.5,
     fontWeight: '400',
-    marginTop: 8,
     textAlign: 'center',
   },
   footer: {
     paddingVertical: 20,
-    paddingBottom: 100,
+    paddingBottom: 40,
     alignItems: 'center',
   },
   legend: {
@@ -401,6 +473,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '400',
     letterSpacing: 0.5,
+    textTransform: 'uppercase',
   },
   loadingContainer: {
     flex: 1,

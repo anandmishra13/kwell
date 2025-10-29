@@ -33,14 +33,14 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
-	<key>NSHealthShareUsageDescription</key>
-	<string>We need access to your health data to calculate your biofeedback score and provide personalized insights.</string>
-	<key>NSHealthUpdateUsageDescription</key>
-	<string>We need to save your mindful session data to track your emotional wellness.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>We need access to your microphone to record and analyze your voice.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>We need access to your health data to calculate your biofeedback score and help you understand your overall wellness.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>We need permission to save mindful sessions to your Health app.</string>
 	<key>NSUserTrackingUsageDescription</key>
-	<string></string>
+	<string>We use tracking to provide you with a personalized experience and improve our services.</string>
 	<key>RCTNewArchEnabled</key>
 	<true/>
 	<key>UIAppFonts</key>
